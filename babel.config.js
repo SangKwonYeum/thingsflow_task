@@ -26,6 +26,7 @@ module.exports = {
           hooks: './src/hooks',
           context: './src/context',
           constants: './src/constants',
+          utils: './src/utils',
         },
       },
     ],
