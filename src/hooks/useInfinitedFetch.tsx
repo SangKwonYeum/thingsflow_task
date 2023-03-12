@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { makeUnique } from 'utils';
 import { TOKEN } from '@env';
 
 interface Props {
@@ -36,7 +37,9 @@ type Option =
       ContentType: string;
     };
 
-export function useInfinitedFetch<T>({ url }: Props): Status<T> & {
+export function useInfinitedFetch<T extends { id: number }>({
+  url,
+}: Props): Status<T> & {
   onFetch: ({ page }: { page: number }) => Promise<void>;
 } {
   const [status, setStatus] = useState<Status<T>>({
@@ -91,7 +94,11 @@ export function useInfinitedFetch<T>({ url }: Props): Status<T> & {
         setStatus(prevStatus => ({
           ...prevStatus,
           page,
-          data: prevStatus.data ? [...prevStatus.data, ...data] : data,
+          data: prevStatus.data
+            ? makeUnique<T>({
+                arr: [...prevStatus.data, ...data],
+              })
+            : data,
           hasNextPage: data.length > 0,
         }));
       } catch (error: unknown) {

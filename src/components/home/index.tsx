@@ -51,11 +51,11 @@ export function HomeContainer({ onRoute }: Props): JSX.Element {
           keyExtractor={(item): string => String(item.id)}
           renderItem={({ item, index }): JSX.Element => (
             <>
+              {index === adPosition - 1 ? <Ad /> : null}
               <Card
                 issue={item}
                 onRoute={(): void => onRoute({ id: String(item.number) })}
               />
-              {index === adPosition - 1 ? <Ad /> : null}
             </>
           )}
           onEndReached={(): void => {
