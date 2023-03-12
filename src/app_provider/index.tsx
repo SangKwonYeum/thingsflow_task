@@ -1,5 +1,6 @@
 import React from 'react';
 import { ThemeProvider } from '@emotion/react';
+import IssueProvider from 'context/IssueProvider';
 import { theme } from 'styles/theme';
 
 interface Props {
@@ -7,5 +8,9 @@ interface Props {
 }
 
 export default function AppProvider({ children }: Props): JSX.Element {
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+  return (
+    <IssueProvider>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    </IssueProvider>
+  );
 }

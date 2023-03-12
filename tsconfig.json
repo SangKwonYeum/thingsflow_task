@@ -38,6 +38,12 @@
       "hooks/*": [
         "hooks/*"
       ],
+      "context/*": [
+        "context/*"
+      ],
+      "constants/*": [
+        "constants/*"
+      ],
     },
     "useUnknownInCatchVariables": false
   },

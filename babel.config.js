@@ -24,6 +24,8 @@ module.exports = {
           types: './src/types',
           app_provider: './src/app_provider',
           hooks: './src/hooks',
+          context: './src/context',
+          constants: './src/constants',
         },
       },
     ],
