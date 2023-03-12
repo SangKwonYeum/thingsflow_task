@@ -45,7 +45,7 @@ export function HomeContainer({ onRoute }: Props): JSX.Element {
             <Card
               key={item.id}
               issue={item}
-              onRoute={(): void => onRoute({ id: String(item.id) })}
+              onRoute={(): void => onRoute({ id: String(item.number) })}
             />
           )}
           onEndReached={(): void => {
