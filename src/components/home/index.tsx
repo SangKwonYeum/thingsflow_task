@@ -1,6 +1,8 @@
 import React, { useContext, useState, useCallback } from 'react';
-import { RefreshControl, Text, View } from 'react-native';
+import { RefreshControl } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
+import Card from 'components/home/card/Card';
+import Indicator from 'components/common/indicator/Indicator';
 import { IssueContext } from 'context/IssueProvider';
 import * as S from './styles';
 
@@ -40,9 +42,11 @@ export function HomeContainer({ onRoute }: Props): JSX.Element {
           data={data}
           estimatedItemSize={120}
           renderItem={({ item }): JSX.Element => (
-            <View>
-              <Text>{item.title}</Text>
-            </View>
+            <Card
+              key={item.id}
+              issue={item}
+              onRoute={(): void => onRoute({ id: String(item.id) })}
+            />
           )}
           onEndReached={(): void => {
             if (hasNextPage) {
@@ -52,11 +56,7 @@ export function HomeContainer({ onRoute }: Props): JSX.Element {
           onEndReachedThreshold={0.5}
         />
       </S.Container>
-      {loading && hasNextPage && !refreshing ? (
-        <View>
-          <Text>Loading...</Text>
-        </View>
-      ) : null}
+      {loading && hasNextPage && !refreshing ? <Indicator /> : null}
     </>
   );
 }
