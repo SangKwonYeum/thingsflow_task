@@ -12,8 +12,20 @@ function App(): JSX.Element {
     <AppProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Home'>
-          <Stack.Screen name='Home' component={Home} />
-          <Stack.Screen name='Detail' component={Detail} />
+          <Stack.Screen
+            name='Home'
+            component={Home}
+            options={{
+              title: 'Angular/angular-cli',
+            }}
+          />
+          <Stack.Screen
+            name='Detail'
+            component={Detail}
+            options={{
+              title: 'Angular/angular-cli',
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </AppProvider>
