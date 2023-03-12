@@ -1,6 +1,7 @@
 import React, { useContext, useState, useCallback } from 'react';
 import { RefreshControl } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
+import Ad from 'components/common/ad/Ad';
 import Card from 'components/home/card/Card';
 import Indicator from 'components/common/indicator/Indicator';
 import { IssueContext } from 'context/IssueProvider';
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function HomeContainer({ onRoute }: Props): JSX.Element {
+  const adPosition = 5;
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { data, loading, error, onFetch, page, hasNextPage } =
     useContext(IssueContext);
@@ -41,12 +43,15 @@ export function HomeContainer({ onRoute }: Props): JSX.Element {
           }
           data={data}
           estimatedItemSize={120}
-          renderItem={({ item }): JSX.Element => (
-            <Card
-              key={item.id}
-              issue={item}
-              onRoute={(): void => onRoute({ id: String(item.number) })}
-            />
+          keyExtractor={(item): string => String(item.id)}
+          renderItem={({ item, index }): JSX.Element => (
+            <>
+              <Card
+                issue={item}
+                onRoute={(): void => onRoute({ id: String(item.number) })}
+              />
+              {index === adPosition - 1 ? <Ad /> : null}
+            </>
           )}
           onEndReached={(): void => {
             if (hasNextPage) {
