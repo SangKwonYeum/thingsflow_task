@@ -45,7 +45,7 @@ export default function IssueProvider({ children }: Props): JSX.Element {
   const { data, error, loading, page, onFetch, hasNextPage } =
     useInfinitedFetch<Issue>({
       url: `${apiRoot}${makeUrlSearchParam({
-        params: [{ per_page: 10 }, { state: 'open' }, { sort: 'comments' }],
+        params: [{ per_page: 15 }, { state: 'open' }, { sort: 'comments' }],
       })}`,
     });
 

@@ -22,6 +22,11 @@ interface Status<T> {
   data: null | Array<T>;
 }
 
+interface OnFetchProps {
+  page: number;
+  needRefresh?: boolean;
+}
+
 type Option =
   | {
       Authorization: string;
@@ -44,7 +49,7 @@ export function useInfinitedFetch<T>({ url }: Props): Status<T> & {
 
   // NOTE: 무한 스크롤을 위한 fetch 함수
   const onFetch = useCallback(
-    async ({ page }: { page: number }): Promise<void> => {
+    async ({ page, needRefresh }: OnFetchProps): Promise<void> => {
       // NOTE: Loading..
       setStatus(prevStatus => ({
         ...prevStatus,
@@ -61,14 +66,27 @@ export function useInfinitedFetch<T>({ url }: Props): Status<T> & {
             ContentType: 'application/json',
           };
 
+      const fetchPage = needRefresh ? 1 : page;
+
       try {
         // NOTE: fetch
-        const response = await fetch(`${url}&page=${page}`, {
+        const response = await fetch(`${url}&page=${fetchPage}`, {
           headers: {
             ...headerOption,
           },
         });
         const data = (await response.json()) as Array<T>;
+
+        if (needRefresh) {
+          // NOTE: refresh가 필요하면 데이터 초기화
+          setStatus(prevStatus => ({
+            ...prevStatus,
+            page: 1,
+            data,
+            hasNextPage: data.length > 0,
+          }));
+          return;
+        }
 
         setStatus(prevStatus => ({
           ...prevStatus,
@@ -87,10 +105,13 @@ export function useInfinitedFetch<T>({ url }: Props): Status<T> & {
           },
         }));
       } finally {
-        setStatus(prevStatus => ({
-          ...prevStatus,
-          loading: false,
-        }));
+        setTimeout(() => {
+          // NOTE: UX를 위해 1초간 로딩
+          setStatus(prevStatus => ({
+            ...prevStatus,
+            loading: false,
+          }));
+        }, 1000);
       }
     },
     [url],
