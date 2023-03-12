@@ -1,6 +1,7 @@
-import React, { useLayoutEffect } from 'react';
+import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { DetailContainer } from 'components';
+import Error from 'components/common/error/Error';
 import Indicator from 'components/common/indicator/Indicator';
 import { useFetch } from 'hooks';
 import { DEFAULT_API_ROOT } from 'constants';
@@ -10,7 +11,7 @@ import { Issue } from 'types/issue';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Detail'>;
 
-export function Detail({ route, navigation }: Props): JSX.Element {
+export function Detail({ route }: Props): JSX.Element {
   const { id } = route.params;
   const apiRoot = API_ROOT || DEFAULT_API_ROOT;
 
@@ -18,14 +19,8 @@ export function Detail({ route, navigation }: Props): JSX.Element {
     url: `${apiRoot}/${id}`,
   });
 
-  useLayoutEffect(() => {
-    if (!id) {
-      navigation.goBack();
-    }
-  }, [id, navigation]);
-
-  if (error) {
-    navigation.goBack();
+  if (error || !id) {
+    return <Error status={400} />;
   }
 
   return (

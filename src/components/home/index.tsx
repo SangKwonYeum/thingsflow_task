@@ -4,6 +4,7 @@ import { FlashList } from '@shopify/flash-list';
 import Ad from 'components/common/ad/Ad';
 import Card from 'components/home/card/Card';
 import Indicator from 'components/common/indicator/Indicator';
+import Error from 'components/common/error/Error';
 import { IssueContext } from 'context/IssueProvider';
 import * as S from './styles';
 
@@ -31,6 +32,10 @@ export function HomeContainer({ onRoute }: Props): JSX.Element {
       setRefreshing(false);
     }, 2000);
   }, [onFetch]);
+
+  if (error) {
+    return <Error status={error.status} message={error.message} />;
+  }
 
   return (
     <>
