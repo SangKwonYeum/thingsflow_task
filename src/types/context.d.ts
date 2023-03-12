@@ -7,5 +7,11 @@ export interface Context<T> {
   hasNextPage: boolean;
   loading: boolean;
   page: number;
-  onFetch: ({ page }: { page: number }) => Promise<void>;
+  onFetch: ({
+    page,
+    needRefresh = false,
+  }: {
+    page: number;
+    needRefresh?: boolean;
+  }) => Promise<void>;
 }
