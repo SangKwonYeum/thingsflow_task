@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { TOKEN } from '@env';
 
 interface Props {
   url: string;
@@ -10,6 +11,15 @@ interface Status<T> {
   data: null | T;
 }
 
+type Option =
+  | {
+      Authorization: string;
+      ContentType: string;
+    }
+  | {
+      ContentType: string;
+    };
+
 export function useFetch<T>({ url }: Props): Status<T> {
   const [status, setStatus] = useState<Status<T>>({
     loading: false,
@@ -17,26 +27,49 @@ export function useFetch<T>({ url }: Props): Status<T> {
     data: null,
   });
 
-  const fetchData = useCallback(
-    async ({ url_ }: { url_: string }): Promise<void> => {
-      setStatus({ loading: true, error: false, data: null });
+  useEffect(() => {
+    const fetchData = async (): Promise<void> => {
+      const headerOption: Option = TOKEN
+        ? {
+            Authorization: `token ${TOKEN}`,
+            ContentType: 'application/json',
+          }
+        : {
+            ContentType: 'application/json',
+          };
+
+      setStatus(prevStatus => ({
+        ...prevStatus,
+        loading: true,
+      }));
+
       try {
-        const response = await fetch(url_);
+        const response = await fetch(url, {
+          headers: {
+            ...headerOption,
+          },
+        });
         const data = (await response.json()) as T;
 
-        setStatus({ loading: false, error: false, data });
-      } catch (error: unknown) {
-        setStatus({ loading: false, error: true, data: null });
+        setStatus(prevStatus => ({
+          ...prevStatus,
+          data,
+        }));
+      } catch (error) {
+        setStatus(prevStatus => ({
+          ...prevStatus,
+          error: true,
+        }));
+      } finally {
+        setStatus(prevStatus => ({
+          ...prevStatus,
+          loading: false,
+        }));
       }
-    },
-    [],
-  );
+    };
 
-  useEffect(() => {
-    fetchData({ url_: url }).catch((error: unknown) => {
-      console.log('error', error);
-    });
-  }, [fetchData, url]);
+    fetchData();
+  }, [url]);
 
   return status;
 }
